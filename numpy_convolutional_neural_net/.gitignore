@@ -1,0 +1,18 @@
+# Jupyter checkpoints
+**/.ipynb_checkpoints
+
+# PyCharm and mac and azure ml and VS Code files
+.idea
+.vscode
+.DS_Store
+
+# Py Test
+.pytest_cache
+
+# Cython
+*.pyc
+*.pyo
+__pycache__
+*.so
+*.o
+*.c
