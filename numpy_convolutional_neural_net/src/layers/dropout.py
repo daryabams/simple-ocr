@@ -1,28 +1,56 @@
-from src.base import Layer
-
 import numpy as np
 
+from src.layers.layer import Layer
 
-class DropoutLayer(Layer):
 
+class Dropout(Layer):
+    """Dropout layer.
+
+    Attributes
+    ----------
+    keep_prob : float
+        Probability that a neuron is kept.
+    mask_dim : tuple
+        Shape of the input ndarray.
+    cached_mask : numpy.ndarray
+        Mask representing kept/dropped neurons.
+    """
     def __init__(self, keep_prob):
-        """
-        :param keep_prob - probability that given unit will not be dropped out
-        """
-        self._keep_prob = keep_prob
-        self._mask = None
+        super().__init__()
+        assert 0 < keep_prob < 1, "Keep probability must be between 0 and 1"
+        self.keep_prob = keep_prob
+        self.mask_dim = None
+        self.cached_mask = None
 
-    def forward_pass(self, a_prev: np.array, training: bool) -> np.array:
+    def init(self, in_dim):
+        self.mask_dim = in_dim
+
+    def forward(self, a_prev, training):
         if training:
-            self._mask = (np.random.rand(*a_prev.shape) < self._keep_prob)
-            return self._apply_mask(a_prev, self._mask)
-        else:
-            return a_prev
+            mask = (np.random.rand(*a_prev.shape) < self.keep_prob)
+            a = self.inverted_dropout(a_prev, mask)
 
-    def backward_pass(self, da_curr: np.array) -> np.array:
-        return self._apply_mask(da_curr, self._mask)
+            # Cache for backward pass
+            self.cached_mask = mask
 
-    def _apply_mask(self, array: np.array, mask: np.array) -> np.array:
-        array *= mask
-        array /= self._keep_prob
-        return array
+            return a
+
+        return a_prev
+
+    def backward(self, da):
+        return self.inverted_dropout(da, self.cached_mask), None, None
+
+    def update_params(self, dw, db):
+        pass
+
+    def get_params(self):
+        pass
+
+    def get_output_dim(self):
+        return self.mask_dim
+
+    def inverted_dropout(self, a, mask):
+        a *= mask
+        a /= self.keep_prob
+        return a
+

@@ -1,55 +1,50 @@
-# Numpy CNN
+# NumpyCNN
+A simple vectorized implementation of a Convolutional Neural Network in plain numpy
+##### Example
 
-## Hit the ground running
-
-Via Conda
-```sh
-# setup conda environment & install all required packages
-conda env create -f environment.yml
-# activate conda environment
-conda activate NumpyCNN
+```python
+# ... some imports here ...
+mnist.init()
+x_train, y_train, x_test, y_test = preprocess(*mnist.load())
+    
+cnn = NeuralNetwork(
+    input_dim=(28, 28, 1),
+    layers=[
+        Conv(5, 1, 32, activation=relu),
+        Pool(2, 2, 'max'),
+        Dropout(0.75),
+        Flatten(),
+        FullyConnected(128, relu),
+        Dropout(0.9),
+        FullyConnected(10, softmax),
+    ],
+    cost_function=softmax_cross_entropy,
+    optimizer=adam
+)
+    
+cnn.train(x_train, y_train,
+          mini_batch_size=256,
+          learning_rate=0.001,
+          num_epochs=30,
+          validation_data=(x_test, y_test))
 ```
 
-Via Virtualenv
-```sh
-# set up python environment
-apt-get install python3-venv
-python3 -m venv .env
-# activate python environment
-source .env/bin/activate
-# install all required packages
-pip install -r requirements.txt
-```
 
-## Demo
+In mnist_cnn.py there is a complete example with a simple model I used to get 99.06% accuracy on the mnist test dataset.
 
-[Check][5] how to use the created library to create a Convolutional Neural Network capable of classifying MNIST images, with 90% accuracy, using only NumPy.
+## You can find an implementation of: 
+#### Gradient Checking
+To check the correctness of derivatives during backpropagation as explained [here](http://ufldl.stanford.edu/wiki/index.php/Gradient_checking_and_advanced_optimization)  
+There are examples of its usage in the tests.
 
-<p align="center"> 
-    <img width="600" src="./viz/cnn_acc.png" alt="Accuracy plot">
-</p>
+#### Layers
+- FullyConnected (Dense)
+- Conv (Conv2D)
+- Pool (MaxPool2D, AveragePool2D)
+- Dropout
+- Flatten
 
-<p align="center"> 
-    <b>Figure 1.</b> Validation set accuracy / epoch 
-</p>
-
-<p align="center"> 
-    <img width="600" src="./viz/cnn_loss.png" alt="Accuracy plot">
-</p>
-
-<p align="center"> 
-    <b>Figure 2.</b> Validation set loss / epoch 
-</p>
-
-## References
-
-1. CS231n: Convolutional Neural Networks for Visual Recognition - [link][1]
-2. One of the most clear implementations of CNN in NumPy - [link][2]
-3. High Performance Convolutional Neural Networks - [link][3]
-4. Fast Convolution Algorithms - [link][4]
-
-[1]: http://cs231n.stanford.edu/
-[2]: https://github.com/lpraat/numpyCNN
-[3]: https://hal.inria.fr/inria-00112631/document
-[4]: https://www.youtube.com/watch?v=agYZcJNmbsU
-[5]: https://github.com/SkalskiP/ILearnDeepLearning.py/blob/master/01_mysteries_of_neural_networks/06_numpy_convolutional_neural_net/notebooks/CompleteCNN.ipynb
+#### Optimizers
+- Gradient Descent
+- RMSProp
+- Adam
