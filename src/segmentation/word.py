@@ -33,7 +33,7 @@ class WordSegmentation():
 		kernel = self.__create_kernel(self.kernel_size, self.sigma, self.theta)
 		imgFiltered = cv.filter2D(img, -1, kernel, borderType=cv.BORDER_REPLICATE).astype(np.uint8)
 		(_, imgThres) = cv.threshold(imgFiltered, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-		# imgThres = 255 - imgThres
+		imgThres = 255 - imgThres
 
 		# find connected components. OpenCV: return type differs between Opencv and 3
 		if cv.__version__.startswith('3.'):

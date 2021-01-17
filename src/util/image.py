@@ -1,4 +1,4 @@
-from segmentation import binarize, line, word
+from segmentation import binarize, line, word, character
 import environment as env
 import util.plot as plot
 import numpy as np
@@ -103,7 +103,7 @@ class Image():
 				(wordBox, wordImg) = w
 				(x, y, w, h) = wordBox
 				img_words.append(wordImg)
-				#cv.imwrite('../out/%s/%d.png'%(f, j), wordImg) # save word
+				# cv.imwrite('../out/%s/%d.png'%(f, j), wordImg) # save word
 				# cv.rectangle(img,(x,y),(x+w,y+h),0,1) # draw bounding box in summary image
 			
 			plot.lines(self.file_path_out("word#", "words", f), img_words)
@@ -113,20 +113,8 @@ class Image():
 		return img_words
 	
 	def segment_characters(self, word):
-		res = []
+		c = character.CharacterSegmentation()
 
-		contours, _ = cv.findContours(word, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)
-		for contour in contours:
-			epsilon = 0.03 * cv.arcLength(contour, True)
-			approx = cv.approxPolyDP(contour, epsilon, True)
-			curr_box = cv.boundingRect(approx)
-			(x, y, w, h) = curr_box
-			if cv.contourArea(contour) < 10:
-				continue
-			if (x == 0) and (y == 0):
-				continue
-				
-			curr_img = word[y:y+h, x:x+w]
-			res.append(curr_img)
-		
-		return res
+		img_characters = c.generate_regions(word)
+
+		return img_characters

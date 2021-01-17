@@ -4,7 +4,7 @@ import numpy as np
 
 class CharacterSegmentation():
 	
-	def __init__(self, binary):
+	def __init__(self):
 		pass
 
 	def generate_regions(self, img):
