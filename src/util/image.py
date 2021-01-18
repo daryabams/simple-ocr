@@ -16,6 +16,10 @@ class Image():
 
 		cv.imwrite(self.file_path_out(), self.img)
 
+		self.lines = None
+		self.words = None
+		self.chars = None
+
 	def file_path_out(self, ext=None, *args):
 		path = os.path.join(env.OUT_PATH, self.name, *args)
 		os.makedirs(path, exist_ok=True)
@@ -38,6 +42,9 @@ class Image():
 	def segment(self):
 		lines = self.segment_lines()
 		words = self.segment_words()
+
+		chars = self.segment_characters(words[0])
+		print(len(chars))
 
 
 
@@ -76,6 +83,7 @@ class Image():
 		# get lines to segment
 		img_lines = l.get_regions()
 		plot.lines(self.file_path_out("line#", "lines"), img_lines)
+
 
 		return img_lines
 

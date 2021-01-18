@@ -24,4 +24,4 @@ class CharacterSegmentation():
 			curr_img = img[y:y+h, x:x+w]
 			res.append(curr_img)
 		
-		return res
+		return sorted(res, key=lambda entry:entry[0][0])
