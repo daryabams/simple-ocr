@@ -8,7 +8,7 @@ import os
 def main():
 
 #	images = sorted(glob(os.path.join(env.SRC_PATH, "*.png")))
-	images = sorted(glob(os.path.join(env.SRC_PATH, "012.png")))
+	images = sorted(glob(os.path.join(env.SRC_PATH, "050.png")))
 
 	for i_path in images:
 		### read data
